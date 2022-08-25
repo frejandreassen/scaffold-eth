@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, CreateMetaTransaction, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -69,6 +69,9 @@ const providers = [
   `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
+
+// Off-chain backend URL
+const backendUrl = 'https://api.andreassens.se/items/meta_transactions'
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
@@ -167,7 +170,9 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  
+  const contractName = "MetaMultiSig";
+  const nonce = useContractReader(readContracts, contractName, "nonce");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -290,6 +295,12 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
+        <Menu.Item key="/create">
+          <Link to="/create">Create</Link>
+        </Menu.Item>
+        <Menu.Item key="/sign">
+          <Link to="/sign">Sign</Link>
+        </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
@@ -312,6 +323,16 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
+        <Route exact path="/create">
+          <CreateMetaTransaction 
+            backendUrl={backendUrl}
+            contractName={contractName}
+            nonce={nonce}
+            readContracts={readContracts}
+            signer={userSigner}
+            localProvider={localProvider}
+          />
+        </Route>
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
@@ -320,7 +341,7 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name={contractName}
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -348,7 +369,6 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             readContracts={readContracts}
-            purpose={purpose}
           />
         </Route>
         <Route path="/mainnetdai">
