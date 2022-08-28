@@ -8,7 +8,7 @@ const { Option } = Select;
 
 const axios = require("axios");
 
-export default function CreateTransaction({
+export default function Create({
   backendUrl,
   contractName,
   contractAddress,
@@ -45,8 +45,9 @@ export default function CreateTransaction({
 
   const computeCallData = async () => {
     let arg = (methodName == "updateSignaturesRequired" ) ? newSignaturesRequired : address;
+    console.log("Argument is: ", arg)
     if (arg && methodName) {
-      let computedCallData = readContracts[contractName]?.interface?.encodeFunctionData(methodName, [address]);
+      let computedCallData = readContracts[contractName]?.interface?.encodeFunctionData(methodName, [arg]);
       setCallData(computedCallData)
       setTo(readContracts[contractName].address)
     }

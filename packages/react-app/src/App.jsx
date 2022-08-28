@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, CreateMetaTransaction, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Create, ExampleUI, Hints, Sign, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -70,7 +70,7 @@ const providers = [
   "https://rpc.scaffoldeth.io:48544",
 ];
 
-// Off-chain backend URL
+// Off-chain backend URL - use this or create your own local or remote
 const backendUrl = 'https://api.andreassens.se/items/meta_transactions'
 
 function App(props) {
@@ -173,12 +173,13 @@ function App(props) {
   
   const contractName = "MetaMultiSig";
   const nonce = useContractReader(readContracts, contractName, "nonce");
+  const signaturesRequired = useContractReader(readContracts, contractName, "signaturesRequired")
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
-
+  
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -324,7 +325,7 @@ function App(props) {
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
         <Route exact path="/create">
-          <CreateMetaTransaction 
+          <Create 
             backendUrl={backendUrl}
             contractName={contractName}
             nonce={nonce}
@@ -332,6 +333,24 @@ function App(props) {
             signer={userSigner}
             localProvider={localProvider}
           />
+        </Route>
+        <Route exact path="/sign">
+          <Sign
+              backendUrl={backendUrl}
+              contractName={contractName}
+              address={address}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              blockExplorer={blockExplorer}
+              nonce={nonce}
+              signaturesRequired={signaturesRequired}
+            />
         </Route>
         <Route exact path="/debug">
           {/*
