@@ -174,7 +174,7 @@ function App(props) {
   const contractName = "MetaMultiSig";
   const nonce = useContractReader(readContracts, contractName, "nonce");
   const signaturesRequired = useContractReader(readContracts, contractName, "signaturesRequired")
-
+  
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)

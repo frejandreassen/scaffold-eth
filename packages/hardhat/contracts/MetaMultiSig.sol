@@ -7,10 +7,10 @@ contract MetaMultiSig {
   using ECDSA for bytes32; 
 
   mapping(address => bool) public isSigner;
-  uint public signaturesRequired;
-  uint public signers;
-  uint public nonce;
-  uint public chainId;
+  uint256 public signaturesRequired;
+  uint256 public signers;
+  uint256 public nonce;
+  uint256 public chainId;
 
   constructor(uint256 _chainId, address[] memory _signers, uint256 _signaturesRequired) {
     require(_signaturesRequired > 0, "constructor(): at least one signature required");

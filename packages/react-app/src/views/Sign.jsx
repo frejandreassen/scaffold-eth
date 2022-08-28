@@ -40,7 +40,29 @@ export default function Sign({
     if (readContracts[contractName]) getTransactions();
   }, [readContracts[contractName]]);
 
-  const sign = (item)  => {
+  const signTransaction = async (item)  => {
+
+    const newHash = await readContracts[contractName].getTransactionHash(
+      item.nonce,
+      item.to,
+      parseEther("" + parseFloat(item.amount).toFixed(12)),
+      item.data,
+    );
+
+    const signature = await userSigner?.signMessage(ethers.utils.arrayify(newHash));
+    const recover = await readContracts[contractName].recover(newHash, signature);
+    const isSigner = await readContracts[contractName].isSigner(recover);
+    if (isSigner) {
+        const newSignatures = [...item.signatures, signature]
+        const newSigners = [...item.signers, recover]
+      
+        const res = await axios.patch(`${backendUrl}/${item.id}` , {
+        ...item,
+        signatures: newSignatures,
+        signers: newSigners,
+      });
+    }
+    getTransactions();
     console.log("SIGN TRANSACTION")
   }
 
@@ -53,48 +75,52 @@ export default function Sign({
     {
       title: 'Nonce',
       dataIndex: 'nonce',
-      key: 'nonce',
+      key: 'nonce'
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-      render: (_, { address }) => ( <Address address={address} fontSize={14} style={{padding:4}}/>)
+      title: 'To',
+      dataIndex: 'to',
+      key: 'to',
+      render: (_, { to }) => ( <Address address={to} fontSize={12} style={{padding:4}}/>)
     },
     {
       title: 'Data',
       key: 'data',
       render: (_, { data, amount }) => {
-        const parsedData = readContracts[contractName]?.interface?.parseTransaction({data: "0xeb12d61e00000000000000000000000078018618083bd5d7cba4b280fdf1907b13075699", value:1})
+        if (data.toString() === '0x')  return (
+          <div><b>Value: </b>{amount} ether</div>
+        )
+        const parsedData = readContracts[contractName]?.interface?.parseTransaction({data: data.toString(), value:amount})
         return ( 
           <>
-            <pre>{JSON.stringify(parsedData, null, 2)}</pre>
-            <div><b>Args: </b>{parsedData.args}</div>
-            <div><b>Args: </b>{parsedData.args}</div>
+            {/* <pre>{JSON.stringify(parsedData, null, 2)}</pre> */}
+            <div><b>Function name: </b>{parsedData.functionFragment?.name}</div>
+            <div><b>Input args: </b>{parsedData.args[0].toString()}</div>
+            <div><b>Value: </b>{parsedData.value.toNumber()} ether</div>
           </>
         )
       }
     },
     {
-      title: '🖉 Signatures',
+      title: 'Signatures',
       dataIndex: 'signatures',
       key: 'signatures',
-      render: (_, { signatures }, signaturesRequired) => {
+      render: (_, { signatures }) => {
         return (
         <>
-          {signatures.length} / {signaturesRequired} {(signatures.length >= signaturesRequired) ? "✅" : ""}
+          {signatures.length} / {signaturesRequired.toNumber()} {(signatures.length >= signaturesRequired.toNumber()) ? "✅" : ""}
         </>
       )},
     },
     {
-      title: 'Signers',
+      title: 'Signed',
       dataIndex: 'signers',
       key: 'signers',
       render: (_, { signers }) => {
         return (
         <>
           {signers.map((signer, i) =>(
-            <Address key={i} address={signer} fontSize={14} style={{padding:4}}/>
+            <div><Address key={i} address={signer} minimized style={{padding:4}}/></div>
           ))
           }
         </>
@@ -109,7 +135,7 @@ export default function Sign({
         <>
           <Button
             type="secondary"
-            onClick={sign(item)}
+            onClick={() => signTransaction(item)}
             disabled={(hasSigned)}
           >
             Sign

@@ -29,14 +29,7 @@ export default function Create({
   const [address, setAddress] = useState("");
   const [to, setTo] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [hasEdited, setHasEdited] = useState() //we want the signaturesRequired to update from the contract _until_ they edit it
-
-  useEffect(()=>{
-    if(!hasEdited){
-      setNewSignaturesRequired(signaturesRequired)
-    }
-  },[signaturesRequired])
+  const [errorMessage, setErrorMessage] = useState("");
 
 
   const inputStyle = {
@@ -73,9 +66,6 @@ export default function Create({
       const isSigner = await readContracts[contractName].isSigner(recover);
       console.log("isSigner: ", isSigner);
 
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
 
       if (isSigner) {
         const res = await axios.post(backendUrl, {
@@ -92,10 +82,17 @@ export default function Create({
 
         console.log("RESULT", res.data);
         setTimeout(() => {
-          history.push("/");
+          history.push("/sign");
           setLoading(false);
         }, 1000);
-      }
+      } else {
+        setErrorMessage("Only Signer can create a meta transaction!")
+        setLoading(false)
+        setTimeout(() => {
+            setErrorMessage("");
+            }, 5000);
+        }
+
     } catch(error) {
       console.log("Error: ", error);
       setLoading(false);
@@ -136,7 +133,6 @@ export default function Create({
                   value={newSignaturesRequired}
                   onChange={(value)=>{
                     setNewSignaturesRequired(value)
-                    setHasEdited(true)
                   }}
                 />
               }
@@ -191,6 +187,7 @@ export default function Create({
                 Create
               </Button>
             </Space>
+            <p style={{color: "red"}}>{errorMessage}</p>
             <p>Sign the transaction with your wallet to add your signature to the calldata hash. The signing is not an on-chain transaction (no gas!) View the meta transactions on the transactions tab.</p>
           </>
         
