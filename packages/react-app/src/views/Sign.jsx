@@ -32,7 +32,8 @@ export default function Sign({
       backendUrl + '?filter[address]=' + readContracts[contractName].address,
     );
     console.log("backend data: ", res.data)
-    setTransactions(res.data.data)
+    const transactions = res.data.data.filter((item) => !item.executed)
+    setTransactions(transactions)
   };
 
 
@@ -64,6 +65,28 @@ export default function Sign({
     }
     getTransactions();
     console.log("SIGN TRANSACTION")
+  }
+
+  const executeTransaction = async (item) => {
+
+    console.log("writeContracts: ", item.to, parseEther("" + parseFloat(item.amount).toFixed(12)), item.data, item.signatures);
+
+    const res = await tx(
+      writeContracts[contractName].execute(
+        item.to,
+        parseEther("" + parseFloat(item.amount).toFixed(12)),
+        item.data,
+        item.signatures,
+      ),
+    );
+    console.log("Tx res is: ", res)
+    if (res) {
+      await axios.patch(`${backendUrl}/${item.id}` , {
+        ...item,
+        executed: true
+      });
+    }
+    getTransactions();
   }
 
   const columns = [
@@ -120,7 +143,7 @@ export default function Sign({
         return (
         <>
           {signers.map((signer, i) =>(
-            <div><Address key={i} address={signer} minimized style={{padding:4}}/></div>
+            <div key={i}><Address  address={signer} minimized style={{padding:4}}/></div>
           ))
           }
         </>
@@ -132,22 +155,31 @@ export default function Sign({
       render: (_, item) => {
         const hasSigned = item.signers.indexOf(address) >= 0;
         return (
-        <>
+        <div style={{ position: "relative", display: "flex", flexDirection: "row" }}>
           <Button
+            style={{margin: "2px"}}
             type="secondary"
             onClick={() => signTransaction(item)}
             disabled={(hasSigned)}
           >
             Sign
           </Button>
-        </>
+          <Button
+            style={{margin: "2px"}}
+            type="primary"
+            onClick={() => executeTransaction(item)}
+            disabled={(!(item.signatures.length >= signaturesRequired.toNumber()))}
+          >
+            Execute
+          </Button>
+        </div>
       )},
     },
   ]
 
 
   return (
-    <div style={{ maxWidth: 850, margin: "auto", marginTop: 32, marginBottom: 32 }}>
+    <div style={{ maxWidth: 1200, margin: "auto", marginTop: 32, marginBottom: 32 }}>
       <h1>
         <b style={{ padding: 16 }}>Meta Transactions</b>
       </h1>
@@ -156,42 +188,7 @@ export default function Sign({
         bordered
         dataSource={transactions}
         columns={columns}
-        // renderItem={item => {
-        //   const hasSigned = item.signers.indexOf(address) >= 0;
-        //   const hasEnoughSignatures = item.signatures.length <= signaturesRequired.toNumber();
-
-        //   console.log("transaction details:", item);
-
-        //   return (
-        //     <>
-        //       <div style={{padding:16}}>
-        //         <div></div>
-        //         <Address address={item.address} fontSize={14} style={{padding:4}}/>
-        //         <span></span>
-        //         <span style={{padding:4}}>
-        //           {item.signatures.length}/{signaturesRequired.toNumber()} {item.signatures.length===signaturesRequired.toNumber() ? "✅" : ""}
-        //         </span>
-        //         <span></span>
-        //         <span style={{padding:4}}>
-        //           <Button
-        //             type="secondary"
-        //             onClick={async () => {
-        //               const newHash = await readContracts[contractName].getTransactionHash(
-        //                 item.nonce,
-        //                 item.to,
-        //                 parseEther("" + parseFloat(item.amount).toFixed(12)),
-        //                 item.data,
-        //               );
-        //             }}
-        //             disabled={(hasSigned || hasEnoughSignatures)}
-        //           >
-        //             Sign
-        //           </Button>
-        //         </span>
-        //     </div>
-        //   </>
-        //   );
-        // }}
+        rowKey="id"
       />
     </div>
   );

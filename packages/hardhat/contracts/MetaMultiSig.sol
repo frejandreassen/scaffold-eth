@@ -39,13 +39,13 @@ contract MetaMultiSig {
     signers--;
   }
 
-  function updateSignaturesRequired(uint newSignaturesRequired) public {
+  function updateSignaturesRequired(uint256 newSignaturesRequired) public {
     require(newSignaturesRequired > 0, "updateSignaturesRequired(): at least one signature required");
     require(newSignaturesRequired <= signers, "updateSignaturesRequired(): not enough number of signers");
     signaturesRequired = newSignaturesRequired;
   }
 
-  function execute(address payable to, uint256 value, bytes memory data) public {
+  function execute(address payable to, uint256 value, bytes memory data, bytes[] memory signatures ) public {
     (bool success, bytes memory result) = to.call{value: value}(data);
     require(success, "executeTransaction: tx failed");
   }

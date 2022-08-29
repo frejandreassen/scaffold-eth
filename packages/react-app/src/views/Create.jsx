@@ -100,11 +100,11 @@ export default function Create({
   };
 
   return (
-    <div>
+    <div style={{ position: "relative", display: "flex", flexDirection: "row" , margin: "auto", width: 900}}>
 
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "64px auto 64px auto"  }}>
         <div style={{ margin: 8 }}>
-          <h2>Compute calldata</h2>
+          <h2>1. Compute calldata</h2>
           <div style={{ margin: 8, padding: 8 }}>
             <Select value={methodName} style={{ width: "100%" }} onChange={setMethodName}>
               <Option key="addSigner">Add Signer</Option>
@@ -150,9 +150,9 @@ export default function Create({
         </div>
       </div>
 
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "64px auto 64px auto" }}>
         <div style={{ margin: 8 }}>
-          <h2>Create meta transaction</h2>
+          <h2>2. Create meta transaction</h2>
           <>
             <div style={inputStyle}>
               <AddressInput
