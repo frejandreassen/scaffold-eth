@@ -1,6 +1,7 @@
 import { List } from "antd";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import Address from "./Address";
+import TokenBalance from "./TokenBalance";
 
 /**
   ~ What it does? ~
@@ -25,7 +26,7 @@ export default function Events({ contracts, contractName, eventName, localProvid
 
   return (
     <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-      <h2>Events:</h2>
+      <h2>{eventName} Events:</h2>
       <List
         bordered
         dataSource={events}
@@ -33,7 +34,15 @@ export default function Events({ contracts, contractName, eventName, localProvid
           return (
             <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.args.purpose}>
               <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              {item.args[1]}
+              {/* <b>{item.args[1].toString()}</b> */}
+              {(item.args[1] > 100) ? (
+              <TokenBalance balance={item.args[1]} provider={localProvider} />) : (
+              <b>{item.args[1].toString()}</b>)}
+              {/* {item.args[1].toString().indexOf("E") == -1 ? (
+                <TokenBalance balance={item.args[1]} provider={localProvider} />
+              ) : (
+                `${item.args[1].toString()}`
+              )} */}
             </List.Item>
           );
         }}

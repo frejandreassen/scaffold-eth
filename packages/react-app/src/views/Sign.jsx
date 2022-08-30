@@ -56,6 +56,14 @@ export default function Sign({
     if (isSigner) {
         const newSignatures = [...item.signatures, signature]
         const newSigners = [...item.signers, recover]
+        newSignatures.sort(async (a, b) => {
+          const recoverA = await readContracts[contractName].recover(newHash, a);
+          const recoverB = await readContracts[contractName].recover(newHash, b);
+          return ethers.BigNumber.from(recoverA).sub(ethers.BigNumber.from(recoverB));
+        });
+        newSigners.sort((a,b) => {
+          return ethers.BigNumber.from(a).sub(ethers.BigNumber.from(b));
+        })
       
         const res = await axios.patch(`${backendUrl}/${item.id}` , {
         ...item,
@@ -131,7 +139,7 @@ export default function Sign({
       render: (_, { signatures }) => {
         return (
         <>
-          {signatures.length} / {signaturesRequired.toNumber()} {(signatures.length >= signaturesRequired.toNumber()) ? "✅" : ""}
+          {signaturesRequired && <>{signatures.length} / {signaturesRequired.toNumber()} {(signatures.length >= signaturesRequired.toNumber()) ? "✅" : ""}</>}
         </>
       )},
     },
@@ -164,14 +172,14 @@ export default function Sign({
           >
             Sign
           </Button>
-          <Button
+          {signaturesRequired && <Button
             style={{margin: "2px"}}
             type="primary"
             onClick={() => executeTransaction(item)}
             disabled={(!(item.signatures.length >= signaturesRequired.toNumber()))}
           >
             Execute
-          </Button>
+          </Button>}
         </div>
       )},
     },
@@ -179,7 +187,7 @@ export default function Sign({
 
 
   return (
-    <div style={{ maxWidth: 1200, margin: "auto", marginTop: 32, marginBottom: 32 }}>
+    <div style={{ maxWidth: 900, margin: "auto", marginTop: 32, marginBottom: 32 }}>
       <h1>
         <b style={{ padding: 16 }}>Meta Transactions</b>
       </h1>

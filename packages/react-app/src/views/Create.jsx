@@ -188,7 +188,7 @@ export default function Create({
               </Button>
             </Space>
             <p style={{color: "red"}}>{errorMessage}</p>
-            <p>Sign the transaction with your wallet to add your signature to the calldata hash. The signing is not an on-chain transaction (no gas!) View the meta transactions on the transactions tab.</p>
+            <p>Sign the transaction with your wallet to add your signature to the calldata hash. The signing is not an on-chain transaction (no gas!)</p>
           </>
         
         </div>
