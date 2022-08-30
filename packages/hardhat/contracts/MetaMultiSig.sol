@@ -73,11 +73,11 @@ contract MetaMultiSig {
     for (uint i = 0; i < signatures.length; i++) {
       address recovered = recover(_hash, signatures[i]);
       require(recovered > duplicateGuard, "executeTransaction: duplicate or unordered signatures");
-      require(isSigner[recovered], "executeTransaction: signed by non-signer");
+      require(isSigner[recovered], "executeTransaction: invalid signature");
       duplicateGuard = recovered;
       validSignatures++;
     }
-    require(validSignatures >= signaturesRequired, "executeTransaction: not enought valid signatures");
+    require(validSignatures >= signaturesRequired, "executeTransaction: not enough valid signatures");
     
     (bool success, bytes memory result) = to.call{value: value}(data);
     require(success, "executeTransaction: tx failed");
