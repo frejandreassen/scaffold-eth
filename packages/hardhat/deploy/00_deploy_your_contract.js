@@ -17,11 +17,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
   const buidlGuidlAddress = "0x97843608a00e2bbc75ab0c1911387e002565dede"
-  const signers = ["0x557A9a9d04cE4c11aE25D7fE46c64a09C66EDC47", "0x78018618083BD5D7cBA4b280FDF1907b13075699", buidlGuidlAddress];
+  // const signers = ["0x557A9a9d04cE4c11aE25D7fE46c64a09C66EDC47", "0x78018618083BD5D7cBA4b280FDF1907b13075699", buidlGuidlAddress];
+  const signers = ["0x78018618083BD5D7cBA4b280FDF1907b13075699"]
   await deploy("MetaMultiSig", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [ chainId, signers, 2 ],
+    args: [ chainId, signers, 1 ],
     log: true,
     waitConfirmations: 5,
   });

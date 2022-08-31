@@ -27,6 +27,7 @@ export default function Sign({
   blockExplorer}) {
 
   const [transactions, setTransactions] = useState();
+  
   const getTransactions = async () => {
     const res = await axios.get(
       backendUrl + '?filter[address]=' + readContracts[contractName].address,
@@ -176,7 +177,7 @@ export default function Sign({
             style={{margin: "2px"}}
             type="primary"
             onClick={() => executeTransaction(item)}
-            disabled={(!(item.signatures.length >= signaturesRequired.toNumber()))}
+            disabled={(!(item.signatures.length >= signaturesRequired.toNumber()) || item.nonce < nonce.toNumber())}
           >
             Execute
           </Button>}
@@ -191,7 +192,7 @@ export default function Sign({
       <h1>
         <b style={{ padding: 16 }}>Meta Transactions</b>
       </h1>
-
+      {nonce ? (<>contract nonce {nonce.toNumber()}</>):(<></>)}
       <Table
         bordered
         dataSource={transactions}
