@@ -1,122 +1,27 @@
-# 🏗 Scaffold-ETH
 
-> everything you need to build on Ethereum! 🚀
-
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
-
-
-# 🏄‍♂️ Quick Start
-
-Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git
-```
-
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
-yarn install
-yarn chain
-```
-
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
-
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
-
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
-
-📱 Open http://localhost:3000 to see the app
-
-# 📚 Documentation
-
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
-
-
-# 🍦 Other Flavors
-- [scaffold-eth-typescript](https://github.com/scaffold-eth/scaffold-eth-typescript)
-- [scaffold-eth-tailwind](https://github.com/stevenpslade/scaffold-eth-tailwind)
-- [scaffold-nextjs](https://github.com/scaffold-eth/scaffold-eth/tree/scaffold-nextjs)
-- [scaffold-chakra](https://github.com/scaffold-eth/scaffold-eth/tree/chakra-ui)
-- [eth-hooks](https://github.com/scaffold-eth/eth-hooks)
-- [eth-components](https://github.com/scaffold-eth/eth-components)
-- [scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)
-- [scaffold-eth-truffle](https://github.com/trufflesuite/scaffold-eth)
-
-
-
-# 🔭 Learning Solidity
-
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://docs.soliditylang.org/en/latest/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/scaffold-eth/scaffold-eth/branches/active), [open issues](https://github.com/scaffold-eth/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+# 🏗 scaffold-eth | 🏰 BuidlGuidl
 
   
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
 
+## 🚩 Challenge X: 📜✍ Multisig Wallet  📜✍
+  
 
- - 🎟  [Create your first NFT](https://github.com/scaffold-eth/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/scaffold-eth/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/scaffold-eth/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/scaffold-eth/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/scaffold-eth/scaffold-eth-examples/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/scaffold-eth/scaffold-eth-examples/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/scaffold-eth/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/scaffold-eth/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/scaffold-eth/scaffold-eth/tree/aave-ape)
+> 🧪 Multisigs are smart contracts with built in voting super powers. A tool for on chain **democracy** or increased security. With the use of a 2/3 multisig signed by your own accounts, you can safely loose the private keys to up to one of your accounts without loosing your good night's sleep. 
 
-# 💌 P.S.
+> 🪄 This challenge also includes some off-chain magic - as we are exploring ways to interact with the multisig and utilize your private key signing power without incurring expensive gas fees. The creation and signing of all Multisig proposals will be handled off-chain - but you will use your Wallet to add your signature using your private keys.
 
-🌍 You need an RPC key for testnets and production deployments, create an [Alchemy](https://www.alchemy.com/) account and replace the value of `ALCHEMY_KEY = xxx` in `packages/react-app/src/constants.js` with your new key.
+> 🎯Build a `MetMultiSig.sol` contract that adds and remove `signers`  and updates the number of `signaturesRequired` in order to execute transactions with the `execute()` function. 
 
-📣 Make sure you update the `InfuraID` before you go to production. Huge thanks to [Infura](https://infura.io/) for our special account that fields 7m req/day!
+> 🤑 In order  to save on gas fees for the contract signers, we will be using off-chain `Meta transactions`. We use the function `getTransactionHash` to compute the proposed transaction information into a hash that we can sign using Metamask or other wallet. We store the transaction information in a separate database where we keep track of all signatures.  The signatures are validated with the `recover()` function at time of on-chain transaction execution. Read more on meta transactions [here](https://medium.com/@austin_48503/ethereum-meta-transactions-90ccf0859e84).
 
-# 🏃💨 Speedrun Ethereum
-Register as a builder [here](https://speedrunethereum.com) and start on some of the challenges and build a portfolio.
+> 🌟 The final deliverable is a 2/3 multisig with two of your own addresses and the buidlguidl multisig as the third signer. (buidlguidl.eth is like your backup recovery). You should be able to propose basic transactions like adding signers, removing signers and updating the number of signatures required. You should be able to sign the transactions and only execute the transaction when at least the required number of signatures have been achieved. 
 
-# 💬 Support Chat
+> 💬 Meet other builders working on this challenge and get help in the [Challenge X Telegram]()!
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
-
----
-
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
-
-### Automated with Gitpod
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
+### Checkpoint 0: 📦 install 📚
+```
+git clone git clone https://github.com/frejandreassen/scaffold-eth meta-multi-sig 
+cd meta-multi-sig
+git checkout meta-multi-sig
+yarn install
+```
